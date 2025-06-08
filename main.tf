@@ -117,9 +117,25 @@ resource "aws_secretsmanager_secret_version" "app_user_password" {
 ############################################
 # LAUNCH TEMPLATE & ASG
 ############################################
+data "aws_ami" "amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+
 resource "aws_launch_template" "web" {
   name_prefix   = "web-"
-  image_id      = "ami-0c94855ba95c71c99"
+  image_id      = data.aws_ami.amazon_linux.id
   instance_type = "t3.micro"
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
 
