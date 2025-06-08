@@ -12,7 +12,7 @@ resource "aws_db_instance" "default" {
   engine                  = "mysql"
   instance_class          = "db.t3.micro"
   allocated_storage       = 20
-  name                    = "mydatabase"
+  db_name                 = "mydatabase"
   username                = "admin"
   password                = var.db_password
   db_subnet_group_name    = aws_db_subnet_group.default.name
