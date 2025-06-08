@@ -17,6 +17,6 @@ resource "mysql_user" "app_user" {
 resource "mysql_grant" "app_user_grant" {
   user       = mysql_user.app_user.user
   host       = mysql_user.app_user.host
-  database   = aws_db_instance.default.name
+  database   = aws_db_instance.default.db_name
   privileges = ["ALL"]
 }
