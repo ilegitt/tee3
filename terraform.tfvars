@@ -1,4 +1,4 @@
-aws_region = "us-west-1"
+aws_region = "us-west-2"
 
 vpc_cidr = "10.0.0.0/16"
 
@@ -8,4 +8,4 @@ public_subnet_cidrs = [
 ]
 
 db_password       = "admin"
-app_user_password = "password"
+app_user_password = "Str0ngPa$$w0rd!"
