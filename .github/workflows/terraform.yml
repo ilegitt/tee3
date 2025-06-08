@@ -1,0 +1,25 @@
+name: Terraform CI
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - run: terraform init
+      - run: terraform validate -no-color
+      - run: terraform plan -no-color -var-file=terraform.tfvars -out=plan.tfplan
+      - if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve plan.tfplan
