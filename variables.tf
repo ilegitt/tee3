@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region used by Terraform"
   type        = string
-  default     = "us-west-2"
+  default     = "us-east-1"
 }
 
 variable "vpc_cidr" {
@@ -17,10 +17,15 @@ variable "public_subnet_cidrs" {
 }
 
 variable "db_password" {
-  description = "RDS master password (stored in Secrets Manager)"
+  description = "RDS master password"
   type        = string
   sensitive   = true
+  validation {
+    condition     = length(var.db_password) >= 8
+    error_message = "The db_password must be at least 8 characters long."
+  }
 }
+
 
 variable "app_user_password" {
   description = "Password for application DB user (stored in Secrets Manager)"
