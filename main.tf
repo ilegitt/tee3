@@ -80,6 +80,7 @@ resource "aws_security_group" "rds_sg" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
+    cidr_blocks     = ["83.20.251.151/32"]
     security_groups = [aws_security_group.ec2_sg.id]
   }
 

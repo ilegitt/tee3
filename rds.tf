@@ -19,7 +19,7 @@ resource "aws_db_instance" "default" {
   vpc_security_group_ids  = [aws_security_group.rds_sg.id]
   multi_az                = true
   storage_encrypted       = true
-  publicly_accessible     = false
+  publicly_accessible     = true
   skip_final_snapshot     = true
 
   depends_on = [aws_autoscaling_group.web_asg]
