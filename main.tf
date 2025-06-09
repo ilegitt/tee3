@@ -11,10 +11,10 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "public" {
-  count             = length(var.public_subnet_cidrs)
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.public_subnet_cidrs[count.index]
-  availability_zone = data.aws_availability_zones.available.names[count.index]
+  count                   = length(var.public_subnet_cidrs)
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.public_subnet_cidrs[count.index]
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
   tags = { Name = "public-${count.index}" }
 }
@@ -73,14 +73,22 @@ resource "aws_security_group" "ec2_sg" {
 
 resource "aws_security_group" "rds_sg" {
   name        = "rds_sg"
-  description = "Allow MySQL from EC2 SG"
+  description = "Allow MySQL from EC2 and Developer IP"
   vpc_id      = aws_vpc.main.id
 
+  # Allow MySQL from your external IP
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Allow MySQL from EC2 instances
   ingress {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    cidr_blocks     = ["83.20.251.151/32"]
     security_groups = [aws_security_group.ec2_sg.id]
   }
 
@@ -133,7 +141,6 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-
 resource "aws_launch_template" "web" {
   name_prefix   = "web-"
   image_id      = data.aws_ami.amazon_linux.id
@@ -169,5 +176,7 @@ resource "aws_autoscaling_group" "web_asg" {
     propagate_at_launch = true
   }
 
-  lifecycle { create_before_destroy = true }
+  lifecycle {
+    create_before_destroy = true
+  }
 }

@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region used by Terraform"
   type        = string
-  default     = "eu-north-1"
+  default     = "eu-west-3"
 }
 
 variable "vpc_cidr" {
